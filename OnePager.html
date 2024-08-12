@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Device Cases</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #212529; /* Dark background for the body */
+            color: #f8f9fa; /* Light text color for visibility */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin-top: 20px;
+            color: #f8f9fa; /* Light text color */
+        }
+        #map {
+            height: 800px; /* Increased height */
+            width: 100%;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Added shadow for depth */
+        }
+        .case-callout {
+            color: white;
+            border-radius: 5px;
+            padding: 10px;
+            position: absolute;
+            width: 150px; /* Fixed width */
+            text-align: center;
+            z-index: 1000; /* Ensure callout appears above map layers */
+        }
+        .case-box {
+            width: 90%; /* Set width to 90% of the container */
+            margin: 10px auto; /* Center the boxes */
+            padding: 20px;
+            border-radius: 5px;
+            color: black; /* Dark text color */
+            background-color: white; /* White background */
+            border: 3px solid; /* Increased border thickness */
+            display: flex;
+            align-items: center; /* Center the content vertically */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        }
+        .case-box img {
+            width: 100px; /* Increased width for larger images */
+            height: 100px; /* Increased height for larger images */
+            border-radius: 5px; /* Rounded corners for images */
+            margin-right: 20px; /* Space between image and text */
+        }
+        .case-box h2 {
+            margin: 0 0 10px; /* Margin adjustments */
+        }
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #343a40; /* Dark footer background */
+            color: white;
+            width: 100%;
+            text-align: center;
+        }
+        .static-map {
+            pointer-events: none; /* Disable map interaction */
+        }
+    </style>
+</head>
+<body>
+    <h1>Transforming Investigations: The Role of IoT Devices in U.S. Law Enforcement</h1>
+    <div id="map" class="static-map"></div>
+    <div id="cases-container" style="width: 100%;"></div>
+    
+    <footer>
+        &copy; 2024 IoT Device Cases. All Rights Reserved.
+    </footer>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map', {
+            dragging: false, // Disable dragging
+            scrollWheelZoom: false, // Disable scroll zoom
+            doubleClickZoom: false, // Disable double click zoom
+            touchZoom: false // Disable touch zoom
+        }).setView([37.8, -96], 4);
+
+        // Lighter tile layer for the map
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors &copy; CartoDB'
+        }).addTo(map);
+
+        // Define the IoT device cases
+        var cases = [
+            {
+                device: 'Smart Camera',
+                agency: 'Los Angeles Police Department',
+                date: 'March 15, 2023',
+                coordinates: [34.0522, -118.2437],
+                color: '#FF5733', // Case 1 color
+                description: 'On March 15, 2023, a Smart Camera played a vital role in solving a robbery case. The camera captured clear footage of the suspects as they entered and exited the scene, providing crucial evidence that led to their identification and arrest. The footage not only helped law enforcement establish a timeline but also corroborated witness testimonies, making it an indispensable tool in the prosecution of the case.',
+                imageUrl: 'https://via.placeholder.com/100', // Placeholder for image URL
+                mediaSource: 'https://www.example.com/smart-camera-case'
+            },
+            {
+                device: 'Connected Doorbell',
+                agency: 'Seattle Police Department',
+                date: 'February 2, 2023',
+                coordinates: [47.6062, -122.3321],
+                color: '#33FF57', // Case 2 color
+                description: 'The Connected Doorbell proved essential in a burglary investigation that took place on February 2, 2023. It recorded video footage of the suspect approaching the property, allowing detectives to identify the individual and their vehicle. This evidence expedited the investigation process, leading to a swift arrest and contributing to the successful prosecution of the case.',
+                imageUrl: 'https://via.placeholder.com/100', // Placeholder for image URL
+                mediaSource: 'https://www.example.com/connected-doorbell-case'
+            },
+            {
+                device: 'Smart Thermostat',
+                agency: 'Miami-Dade Police Department',
+                date: 'July 10, 2022',
+                coordinates: [25.7617, -80.1918],
+                color: '#3357FF', // Case 3 color
+                description: 'On July 10, 2022, a Smart Thermostat was instrumental in a domestic violence investigation. The thermostat recorded unusual temperature spikes, indicating occupancy at odd hours, which led investigators to uncover critical evidence and subsequently charge the suspect.',
+                imageUrl: 'https://via.placeholder.com/100', // Placeholder for image URL
+                mediaSource: 'https://www.example.com/smart-thermostat-case'
+            },
+            {
+                device: 'Smart Speaker',
+                agency: 'New York Police Department',
+                date: 'October 5, 2021',
+                coordinates: [40.7128, -74.0060],
+                color: '#FF33A6', // Case 4 color
+                description: 'A Smart Speaker recorded vital audio during an incident on October 5, 2021. The device captured a confrontation that was later used as key evidence in a homicide trial, demonstrating the role of everyday technology in modern investigations.',
+                imageUrl: 'https://via.placeholder.com/100', // Placeholder for image URL
+                mediaSource: 'https://www.example.com/smart-speaker-case'
+            },
+            {
+                device: 'GPS Tracker',
+                agency: 'Chicago Police Department',
+                date: 'May 12, 2023',
+                coordinates: [41.8781, -87.6298],
+                color: '#FFC300', // Case 5 color
+                description: 'On May 12, 2023, a GPS Tracker helped law enforcement track a stolen vehicle. The real-time location data provided critical information that led to the swift recovery of the vehicle and the arrest of the suspects involved in the theft.',
+                imageUrl: 'https://via.placeholder.com/100', // Placeholder for image URL
+                mediaSource: 'https://www.example.com/gps-tracker-case'
+            }
+        ];
+
+        // Render cases
+        cases.forEach(function(caseInfo) {
+            var caseDiv = document.createElement('div');
+            caseDiv.className = 'case-box';
+            caseDiv.style.borderColor = caseInfo.color; // Set border color to match case point
+            caseDiv.innerHTML = `
+                <img src="${caseInfo.imageUrl}" alt="${caseInfo.device}">
+                <div>
+                    <h2 style="color: ${caseInfo.color};">${caseInfo.device}</h2> <!-- Set title color to match case point -->
+                    <p><strong>Agency:</strong> ${caseInfo.agency}</p>
+                    <p><strong>Date:</strong> ${caseInfo.date}</p>
+                    <p>${caseInfo.description}</p>
+                    <p><a href="${caseInfo.mediaSource}" target="_blank" style="color: #007bff; text-decoration: underline;">Read more</a></p>
+                </div>
+            `;
+            document.getElementById('cases-container').appendChild(caseDiv);
+
+            // Add a point to the map
+            var marker = L.circleMarker(caseInfo.coordinates, {
+                color: caseInfo.color, // Color of the point
+                radius: 10 // Radius of the point
+            }).addTo(map);
+
+            // Add a callout for the case name
+            marker.bindTooltip(caseInfo.device, {
+                permanent: true,
+                direction: 'top',
+                className: 'case-callout',
+                offset: [0, -15] // Position the tooltip above the marker
+            }).openTooltip();
+        });
+    </script>
+</body>
+</html>
