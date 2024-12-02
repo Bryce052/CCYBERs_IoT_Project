@@ -30,8 +30,6 @@ The goal of this project is to illustrate how IoT technologies can assist law en
 
 ---
 
-## Installation and Usage
-
 ### Prerequisites
 To view or edit this project, you'll need:
 - A modern web browser (e.g., Chrome, Firefox, Edge).
